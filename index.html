@@ -126,10 +126,10 @@ header span{font-size:12px;color:var(--muted)}
     });
   }
 
-  function abreEntrada(tipo) {
+  function abreEntrada(tipo, placeholder) {
     campo.type = tipo === 'tel' ? 'tel' : 'text';
     campo.inputMode = tipo === 'tel' ? 'tel' : 'text';
-    campo.placeholder = tipo === 'tel' ? '(11) 99999-9999' : 'Seu nome';
+    campo.placeholder = placeholder || (tipo === 'tel' ? '(11) 99999-9999' : '');
     entrada.classList.remove('oculto');
     campo.value = '';
     erro.textContent = '';
@@ -191,9 +191,10 @@ header span{font-size:12px;color:var(--muted)}
     }
 
     else if (passo.tipo === 'texto') {
-      abreEntrada('text');
+      abreEntrada('text', passo.placeholder);
+      const minimo = passo.minimo || 2;
       pedeEntrada(
-        (v) => (v.length < 2 ? 'Escreva como podemos te chamar.' : ''),
+        (v) => (v.length < minimo ? (passo.erro || 'Preencha este campo.') : ''),
         async (v) => {
           dados[passo.campo] = v;
           await executa(passo.next);
@@ -202,7 +203,6 @@ header span{font-size:12px;color:var(--muted)}
     }
 
     else if (passo.tipo === 'whatsapp') {
-      dados.qualificado = 'sim';
       abreEntrada('tel');
       consentLinha.classList.remove('oculto');
       consent.checked = false;
@@ -240,10 +240,6 @@ header span{font-size:12px;color:var(--muted)}
       wrap.appendChild(a);
       chat.appendChild(wrap);
       rolar();
-    }
-
-    else if (passo.tipo === 'fim') {
-      dados.qualificado = 'nao';
     }
   }
 

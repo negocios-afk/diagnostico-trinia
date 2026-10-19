@@ -27,13 +27,12 @@ const MAPA_CAMPOS = {
   gatilho: "diag_gatilho",
   lead: "diag_lead",
   consentimento: "diag_consentimento",
-  qualificado: "diag_qualificado",
 };
 
 // ============================================================
 // ROTEIRO
-// tipo: botoes | texto | whatsapp | agenda | fim
-// next: próximo passo. Quem vai para "nutricao" não é enviado ao HubSpot.
+// tipo: botoes | texto | whatsapp | agenda
+// Todos chegam à agenda: a página não recusa mais ninguém.
 // ============================================================
 const ROTEIRO = {
   inicio: "abertura",
@@ -49,12 +48,15 @@ const ROTEIRO = {
 
     cargo: {
       tipo: "botoes",
-      msgs: ["Vamos direto ao ponto. Qual é o seu cargo?"],
+      msgs: ["Vamos direto ao ponto. Qual é o seu cargo na empresa?"],
       campo: "cargo",
       opcoes: [
         { label: "Sócio ou dono", next: "nome" },
-        { label: "Diretor ou gestor", next: "nome" },
-        { label: "Outro", next: "nutricao" },
+        { label: "Fundador", next: "nome" },
+        { label: "Diretor", next: "nome" },
+        { label: "Gerente", next: "nome" },
+        { label: "Coordenador ou supervisor", next: "nome" },
+        { label: "Outro", next: "nome" },
       ],
     },
 
@@ -62,20 +64,20 @@ const ROTEIRO = {
       tipo: "texto",
       msgs: ["Perfeito. Como posso te chamar?"],
       campo: "nome",
+      placeholder: "Seu primeiro nome",
+      erro: "Escreva como podemos te chamar.",
+      minimo: 2,
       next: "faturamento",
     },
 
     faturamento: {
-      tipo: "botoes",
+      tipo: "texto",
       msgs: ["Boa, {nome}. Qual é o faturamento mensal aproximado da empresa?"],
       campo: "faturamento",
-      opcoes: [
-        { label: "Até R$ 500 mil", next: "nutricao" },
-        { label: "De R$ 500 mil a R$ 750 mil", next: "decisor" },
-        { label: "De R$ 750 mil a R$ 1 milhão", next: "decisor" },
-        // Acima do foco atual: segue no fluxo e fica marcado para revisão manual
-        { label: "Acima de R$ 1 milhão", next: "decisor" },
-      ],
+      placeholder: "Ex.: 800 mil por mês",
+      erro: "Escreva um valor aproximado, mesmo que seja uma estimativa.",
+      minimo: 2,
+      next: "decisor",
     },
 
     decisor: {
@@ -84,8 +86,12 @@ const ROTEIRO = {
       campo: "decisor",
       opcoes: [
         { label: "Eu, com tempo para isso", next: "desafio" },
+        { label: "Eu, mas com pouco tempo", next: "desafio" },
         { label: "Um gestor com autonomia", next: "desafio" },
-        { label: "Ainda ninguém com esse papel", next: "nutricao" },
+        { label: "Um gestor com pouca autonomia", next: "desafio" },
+        { label: "Um comitê ou sócios", next: "desafio" },
+        { label: "Ainda ninguém com esse papel", next: "desafio" },
+        { label: "Não sei dizer", next: "desafio" },
       ],
     },
 
@@ -95,7 +101,11 @@ const ROTEIRO = {
       campo: "desafio",
       opcoes: [
         { label: "Crescer sem perder o controle", next: "disposicao" },
-        { label: "Organizar rotinas e indicadores", next: "disposicao" },
+        { label: "Organizar rotinas e processos", next: "disposicao" },
+        { label: "Acompanhar indicadores com clareza", next: "disposicao" },
+        { label: "Reduzir a dependência do dono", next: "disposicao" },
+        { label: "Aumentar a margem", next: "disposicao" },
+        { label: "Montar uma equipe com processos", next: "disposicao" },
         { label: "Preparar a empresa para venda ou sociedade", next: "disposicao" },
         { label: "Decidir com mais dados", next: "disposicao" },
       ],
@@ -108,14 +118,16 @@ const ROTEIRO = {
       opcoes: [
         { label: "Sim, quero começar", next: "contato" },
         { label: "Depende do que for proposto", next: "contato" },
-        { label: "Só quero uma ferramenta para acompanhar números", next: "nutricao" },
+        { label: "Quero entender melhor antes", next: "contato" },
+        { label: "Prefiro começar com uma ferramenta", next: "contato" },
+        { label: "Ainda não tenho certeza", next: "contato" },
       ],
     },
 
     contato: {
       tipo: "whatsapp",
       msgs: [
-        "Pelo que você respondeu, vale uma conversa de 30 minutos com o nosso time.",
+        "Obrigado, {nome}. Com essas respostas, vale uma conversa de 30 minutos com o nosso time.",
         "Me passa seu WhatsApp para confirmar o horário?",
       ],
       campo: "whatsapp",
@@ -124,15 +136,7 @@ const ROTEIRO = {
 
     agendar: {
       tipo: "agenda",
-      msgs: ["Pronto. Escolha o horário que funciona para você."],
-    },
-
-    nutricao: {
-      tipo: "fim",
-      msgs: [
-        "Obrigado pelas respostas. Hoje não parece o melhor momento para uma conversa.",
-        "Vamos compartilhar conteúdos sobre gestão e crescimento. Se fizer sentido no futuro, é só nos procurar.",
-      ],
+      msgs: ["Pronto. Escolha o melhor horário para a conversa."],
     },
   },
 };

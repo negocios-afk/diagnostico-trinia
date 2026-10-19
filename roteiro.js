@@ -3,7 +3,7 @@
 // ============================================================
 const CONFIG = {
   // Link da agenda de 30 minutos (negocios@trinia.com.br)
-  calendarUrl: "COLE_AQUI_O_LINK_DA_AGENDA",
+  calendarUrl: "https://calendar.app.google/qX7ajH1N8n17Ap92A",
 
   // Formulário do HubSpot (público: pode ficar no código)
   // portalId: Configurações > Conta > ID da conta
